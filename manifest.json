@@ -1,0 +1,20 @@
+{
+    "manifest_version": 2,
+    "name": "WordReplace",
+    "version": "0.1",
+  
+    "description": "Search and replaces words on a page automatically",
+  
+    "icons": {
+      "48": "icons/icon-48.png"
+    },
+  
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["scripts/wordreplace.js"]
+      }
+    ]
+  
+  }
+  
