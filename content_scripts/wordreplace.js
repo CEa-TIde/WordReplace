@@ -1,12 +1,16 @@
 
-
+// TODO:
+//  - Listen to message channel for word replacements
+//  - Replace let bindings, as error is thrown when run twice
 let words = [
     {s: /relace/gi, r: "replaca"},
     {s: /girl/gi, r: "catgirl"},
-    {s: /the/gi, r: "tha"}
+    {s: /the /gi, r: "tha "}
 ];
 
 // let elems = document.querySelectorAll("body *:not(script):not(noscript):not(style)");
+
+// TODO: optionally exclude elements with notranslate attribute
 let b = document.body;
 let txtNodes = textNodesUnder(b);
 let inputNodes = document.querySelectorAll("input");
