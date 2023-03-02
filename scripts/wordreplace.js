@@ -10,16 +10,21 @@ let words = [
 let b = document.body;
 let txtNodes = textNodesUnder(b);
 let inputNodes = document.querySelectorAll("input");
+let altNodes = document.querySelectorAll("area, img, input");
+let titleNodes = document.querySelectorAll("body *");
 words.forEach(x => {
     try {
         // Replace all text nodes
-        txtNodes.forEach(y => {
-            console.log(y.textContent);
-            y.textContent = y.textContent.replace(x.s, x.r);
-        });
+        txtNodes.forEach(y => y.textContent = y.textContent.replace(x.s, x.r));
 
         // Replace all input values
-        inputNodes.forEach(y => y.value = y.value.replace(x.s, x.r));
+        inputNodes.forEach(y => { if(y.value) y.value = y.value.replace(x.s, x.r)});
+
+        // Replace alt text
+        altNodes.forEach(y => { if(y.alt) y.alt = y.alt.replace(x.s, x.r)});
+
+        // Replace title text
+        titleNodes.forEach(y => { if(y.title) y.title = y.title.replace(x.s, x.r)});
     }
     catch (e) {
         console.warn(`[WordReplace]: Query (${x.s}) or replacement (${x.r}) is not a valid value. \n\n Error: ${e}`);
