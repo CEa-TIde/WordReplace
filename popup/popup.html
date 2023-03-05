@@ -7,9 +7,13 @@
 
     <body>
         <div id="popup-content">
-            <form style="display:none;">
-                <input type="text" value="/girl/gi"/>
-                <input type="submit" value="submit"/>
+            <ul>
+                <div class="wr-entry"><span class="entry-regex">/cat/gi</span> &rarr; <span class="entry-replace">catgirl</span><button class="entry-del">X</button></div>
+            </ul>
+            <form class="add-entry">
+                <span>/</span><input type="text" name="regexexpr" required value=""/><span>/</span><input type="text" name="regexflags" value="gi" maxlength="6"/>
+                <input type="text" name="replacevalue" required value=""/>
+                <input type="submit" name="addvalue" value="Add expression"/>
             </form>
             <button id="exec-btn">Run word replacement</button>
         </div>
