@@ -3,6 +3,12 @@ body {
   /* width: 400px; */
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  height: 400px;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
 }
 
 .hidden {
@@ -22,4 +28,57 @@ body {
 
 #exec-btn:hover {
   background-color: #CFF2F2;
+}
+
+
+.entry-list {
+  padding-inline-start: 0;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  border-radius: 5px;
+  background: #444488;
+  width: 100%;
+}
+
+.wr-entry {
+  width: auto;
+  display: flex;
+  list-style-type: none;
+  border-radius: 3px;
+  background: #7777aa;
+  font-size: 1.1em;
+  padding: 5px;
+  justify-content: space-between;
+}
+
+.entry-expr {
+  width: auto;
+  background: red;
+  display: inline-block;
+}
+
+.wr-entry .entry-del {
+  display: hidden;
+  background: transparent;
+  transition: background-color 0.2s linear;
+  border-radius: 2px;
+  margin: 3px;
+  padding-inline: unset;
+  padding: 5px;
+  border: none;
+  text-align: center;
+}
+.wr-entry:hover .entry-del {
+  display: inline-block;
+}
+.entry-del:hover {
+  background: #aa0000;
+}
+
+.add-entry input[type=text] {
+  font-family: "Lucida Console", "Courier New", monospace;
+}
+
+.add-entry input[name=regexflags] {
+  width: 7ch;
 }
