@@ -4,49 +4,59 @@
 class HtmlHandler {
 
     constructor() {
+        // get all elements needed from DOM.
         this.entryListEl = document.querySelector(".entry-list");
-        if (this.entryListEl == null) return null;
+        if (null == this.entryListEl) return null;
 
         let entryForm = document.querySelector(".add-entry");
-        if (entryForm == null) return null;
+        if (null == entryForm) return null;
 
         this.entryFormRgx = entryForm.querySelector("input[name=regexexpr");
         this.entryFormFlgs = entryForm.querySelector("input[name=regexflags]");
         this.entryFormValue = entryForm.querySelector("input[name=replacevalue]");
-        if (this.entryFormRgx == null || this.entryFormFlgs == null || this.entryFormValue == null) {
+        if (null == this.entryFormRgx || null == this.entryFormFlgs || null == this.entryFormValue) {
             return null;
         }
     }
 
+    /**
+     * Get all the current entries as regex-value pair objects.
+     * Format regex-value pair => {s: [regex], r: [value]}
+     */
     get entries() {
-        return this.entryListEl.childNodes.map(x => {
+        console.log(this.entryListEl.querySelectorAll(".wr-entry"));
+        return Array.from(this.entryListEl.querySelectorAll(".wr-entry")).map(x => {
             try {
                 let regexStr = x.querySelector(".entry-regex").innerHTML;
                 let flgs = x.querySelector(".entry-flags").innerHTML;
-                let replace = x.querySelector(".entry-value").innerHTML;
-                let regex = new RegexExp(regexStr, flgs);
-                return ({s: regex, r: replace});
+                let replaceValue = x.querySelector(".entry-value").innerHTML;
+                let regex = new RegExp(regexStr, flgs);
+                return ({s: regex, r: replaceValue});
             }
             catch (e) {
-                console.warn(`Something went wrong parsing regex entry ${x} (skipping entry): ${e}.`);
+                console.warn(`Something went wrong parsing regex entry (skipping entry): ${e.message}.`, x);
             }
         });
     }
 
+    /**
+     * Creates a new entry using the values from the form and adds it to the DOM.
+     */
     addEntry() {
         try {
             let el = this.#createNewEntry(this.entryFormRgx.value, this.entryFormFlgs.value, this.entryFormValue.value);
             this.entryListEl.appendChild(el);
         }
         catch (e) {
-            console.warn(`Something went wrong creating a new entry: ${e}`);
+            console.warn(`Something went wrong creating a new entry: ${e.name}: ${e.message}`);
         }
     }
-
-    removeEntry(el) {
-        console.log(el);
-        let entry = el.parentElement;
-        console.log(entry);
+    
+    /**
+     * Removes an entry from the entry list.
+     * @param {Element} entry the entry to remove.
+     */
+    removeEntry(entry) {
         if (entry.remove) {
             entry.remove();
         } else {
@@ -54,8 +64,16 @@ class HtmlHandler {
         }
     }
 
-
+    /**
+     * Creates a new DOM element for an entry with the information from the form.
+     * @param {String} regexStr the regex expression itself.
+     * @param {String} regexFlags the flags to apply to the regex.
+     * @param {String} replaceValue the string to replace the match with.
+     * @returns a DOM element for an entry. This element is not yet added to the DOM.
+     */
     #createNewEntry(regexStr, regexFlags, replaceValue) {
+        this.#throwInvalid(regexStr, regexFlags, replaceValue);
+
         let entry = document.createElement("li");
         entry.classList.add("wr-entry");
 
@@ -84,31 +102,57 @@ class HtmlHandler {
         let entryDel = document.createElement("button");
         entryDel.classList.add("entry-del");
         entryDel.innerText = "X";
-        entryDel.addEventListener("click", (e) => this.removeEntry(e.target));
+        entryDel.addEventListener("click", (e) => this.removeEntry(e.target.parentElement));
 
         entry.appendChild(expr);
         entry.appendChild(entryDel);
 
         return entry;
     }
+
+    /**
+     * Check if the provided value are valid to create an entry with. It is not checked if expression itself is valid syntax.
+     * Throws and error if not valid.
+     * @param {String} regexStr the regex expression itself (as a string). Needs to be non-empty.
+     * @param {String} regexFlags regex flags applied on the expression. Needs to consist of 0 or more of the following flags: igsmyu.
+     * @param {String} replaceValue string to replace the match with.
+     */
+    #throwInvalid(regexStr, regexFlags, replaceValue) {
+        if ("" == regexStr || null == regexStr) throw { name: "InvalidExprError", message : "regex expression cannot be empty." };
+        if (!(/^[igsmyu]{0,6}$/.test(regexFlags))) throw { name: "InvalidExprError", message : "Regex flags are not valid. Must be zero or more of the following: igsmyu."};
+    }
 }
 
 
 
-// Initialise html handler and event listeners
+// Initialise html handler
 const htmlHandler = new HtmlHandler();
-document.querySelector("#exec-btn").addEventListener("click", (e) => wordReplace());
-document.querySelector("#addentrybtn").addEventListener("click", (e) => htmlHandler.addEntry());
-document.querySelectorAll(".entry-del").forEach(x => x.addEventListener("click", (e) => htmlHandler.removeEntry(e.target)));
+
+// Start up content script
+browser.tabs.executeScript({ file: "../content_scripts/wordreplace.js" })
+.then(listen)
+.catch(handleError)
+
 
 function wordReplace() {
-    browser.tabs.executeScript({ file: "../content_scripts/wordreplace.js" })
-    .then(listen)
-    .catch(handleError)
+    // Get current entries and send to content script
+    options = { entries: htmlHandler.entries }
+    browser.runtime.sendMessage("replace", options);
 }
+
+// function wordReplace2() {
+//     browser.tabs.executeScript({ file: "../content_scripts/wordreplace.js" })
+//     .then(listen)
+//     .catch(handleError)
+// }
 
 function listen() {
     console.log("Listening...");
+
+    // Set up the event listeners.
+    document.querySelector("#exec-btn").addEventListener("click", (e) => wordReplace());
+    document.querySelector("#addentrybtn").addEventListener("click", (e) => htmlHandler.addEntry());
+    document.querySelectorAll(".entry-del").forEach(x => x.addEventListener("click", (e) => htmlHandler.removeEntry(e.target.parentElement)));
 }
 
 function handleError(err) {
