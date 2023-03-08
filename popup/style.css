@@ -80,5 +80,5 @@ body {
 }
 
 .add-entry input[name=regexflags] {
-  width: 7ch;
+  width: 8ch;
 }

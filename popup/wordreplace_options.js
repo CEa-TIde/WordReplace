@@ -86,11 +86,11 @@ class HtmlHandler {
         entryRgx.classList.add("entry-regex");
         let entryFlgs = document.createElement("span");
         entryFlgs.innerHTML = regexFlags;
-        entryRgx.classList.add("entry-flags");
+        entryFlgs.classList.add("entry-flags");
         let larr = document.createTextNode(" → ");
         let entryVal = document.createElement("span");
         entryVal.innerHTML = replaceValue;
-        entryRgx.classList.add("entry-value");
+        entryVal.classList.add("entry-value");
 
         expr.appendChild(slash1);
         expr.appendChild(entryRgx);
@@ -119,7 +119,7 @@ class HtmlHandler {
      */
     #throwInvalid(regexStr, regexFlags, replaceValue) {
         if ("" == regexStr || null == regexStr) throw { name: "InvalidExprError", message : "regex expression cannot be empty." };
-        if (!(/^[igsmyu]{0,6}$/.test(regexFlags))) throw { name: "InvalidExprError", message : "Regex flags are not valid. Must be zero or more of the following: igsmyu."};
+        if (!(/^[igsmyud]{0,7}$/.test(regexFlags))) throw { name: "InvalidExprError", message : "Regex flags are not valid. Must be zero or more of the following: igsmyud."};
     }
 }
 
@@ -135,9 +135,15 @@ browser.tabs.executeScript({ file: "../content_scripts/wordreplace.js" })
 
 
 function wordReplace() {
+    browser.tabs.query({active: true, currentWindow: true})
+    .then(sendMsg)
+    .catch(handleError)
+}
+
+function sendMsg(tabs) {
     // Get current entries and send to content script
-    options = { entries: htmlHandler.entries }
-    browser.runtime.sendMessage("replace", options);
+    msg = { entries: htmlHandler.entries }
+    browser.tabs.sendMessage(tabs[0].id, msg);
 }
 
 // function wordReplace2() {
