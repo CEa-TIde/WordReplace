@@ -6,15 +6,19 @@
     "description": "Search and replaces words on a page automatically",
   
     "icons": {
-      "48": "icons/icon-48.png"
+      "48": "icons/icon-48.png",
+      "96": "icons/nonexistent-96.png"
     },
-  
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["scripts/wordreplace.js"]
-      }
-    ]
-  
+
+    "permissions": [
+        "activeTab"
+    ],
+
+    "browser_action": {
+        "default_icon": "icons/icon-32x32.png",
+        "default_title": "WordReplace",
+        "default_popup": "popup/popup.html"
+    },
+
+    "web_accessible_resources" : []
   }
-  

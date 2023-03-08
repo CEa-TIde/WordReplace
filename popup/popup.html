@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+
+    <body>
+        <div id="popup-content">
+            <ul class="entry-list">
+                <li class="wr-entry">
+                    <div class="entry-expr">
+                        /<span class="entry-regex">dog</span>/<span class="entry-flags">gi</span> &rarr; <span class="entry-value">cat</span>
+                    </div>
+                    <button class="entry-del">X</button>
+                </li>
+            </ul>
+            <form class="add-entry">
+                /<input type="text" name="regexexpr" required value=""/>/<input type="text" name="regexflags" value="gi" maxlength="7"/>
+                <input type="text" name="replacevalue" required value=""/>
+                <input type="button" name="addentry" id="addentrybtn" value="Add expression"/>
+            </form>
+            <button id="exec-btn">Run word replacement</button>
+        </div>
+        <div id="error-content" class="hidden">
+            <p>Oops! Something went wrong!</p>
+            <p>Error: <span id="error-code"></span></p>
+        </div>
+        <script src="wordreplace_options.js"></script>
+    </body>
+</html>
