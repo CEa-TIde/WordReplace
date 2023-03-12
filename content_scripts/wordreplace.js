@@ -1,19 +1,11 @@
 (() => {
-    // TODO:
-    //  - Listen to message channel for word replacements
-    //  - Replace let bindings, as error is thrown when run twice
-    // let words = [
-    //     {s: /relace/gi, r: "replaca"},
-    //     {s: /girl/gi, r: "catgirl"},
-    //     {s: /the /gi, r: "tha "}
-    // ];
-
 
     // Don't run the content script twice
     if (window.hasRun) {
         return;
     }
     window.hasRun = true;
+    
 
     // TODO: optionally exclude elements with notranslate attribute
     let b = document.body;

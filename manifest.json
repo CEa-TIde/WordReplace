@@ -11,7 +11,9 @@
     },
 
     "permissions": [
-        "activeTab"
+        "activeTab",
+        "menus",
+        "storage"
     ],
 
     "browser_action": {
@@ -19,6 +21,12 @@
         "default_title": "WordReplace",
         "default_popup": "popup/popup.html"
     },
+
+    "background": {
+      "scripts": ["background_scripts/settings.js"],
+      "persistent": false
+    },
+    
 
     "web_accessible_resources" : []
   }

@@ -1,3 +1,8 @@
+// Script for displaying and handling the popup interactions.
+// It saves and loads the data by communicating with the background script.
+// Running the replacement operation is done by sending a message to the content script.
+
+
 /**
  * Class for handling the creation and deletion of regex entries.
  */
