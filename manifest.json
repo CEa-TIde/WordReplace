@@ -23,7 +23,7 @@
     },
 
     "background": {
-      "scripts": ["background_scripts/settings.js"],
+      "scripts": ["background_scripts/background.js"],
       "persistent": false
     },
     
